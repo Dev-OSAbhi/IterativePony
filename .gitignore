@@ -1,0 +1,39 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test files
+*_test.go
+
+# Go workspace
+go.work
+
+# IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Vendored
+vendor/
+
+# Environment
+.env
+.env.*
+
+# Logs
+*.log
+
+# Database
+*.sqlite
+*.sqlite3
+
+# MongoDB data
+data/
