@@ -5,9 +5,6 @@
 *.so
 *.dylib
 
-# Test files
-*_test.go
-
 # Go workspace
 go.work
 
