@@ -82,6 +82,14 @@ The implementation will be broken down into small, incremental steps:
 6. Retrieve metrics via API and verify correct data returned
 7. Check that basic bottleneck detection and recommendations work
 
+## Testing
+
+Tests are located in the `./tests` directory, organized by package. To run all tests:
+
+```bash
+go test ./tests/... -v
+```
+
 ## License
 
 MIT
