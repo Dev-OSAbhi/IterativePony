@@ -89,7 +89,3 @@ Tests are located in the `./tests` directory, organized by package. To run all t
 ```bash
 go test ./tests/... -v
 ```
-
-## License
-
-MIT
