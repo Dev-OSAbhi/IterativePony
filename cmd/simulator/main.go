@@ -6,6 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"iterative-pony/config"
+	"iterative-pony/internal/api"
+	"iterative-pony/internal/simulation"
 	"iterative-pony/internal/storage"
 )
 
@@ -40,6 +42,9 @@ func main() {
 		log.Fatalf("Failed to initialize MongoDB store: %v", err)
 	}
 
+	// Create backup job simulator
+	simulator := simulation.NewBackupJobSimulator(sqliteStore, "backup-job-001")
+
 	// Set up Gin router
 	router := gin.New()
 	router.Use(gin.Logger())
@@ -54,6 +59,17 @@ func main() {
 			"mongo":   "connected",
 		})
 	})
+
+	// Create API handler
+	handler := api.NewHandler(simulator)
+
+	// Simulation endpoints
+	simGroup := router.Group("/simulate")
+	{
+		simGroup.POST("/start", handler.StartSimulation)
+		simGroup.POST("/stop", handler.StopSimulation)
+		simGroup.GET("/status", handler.SimulationStatus)
+	}
 
 	// Run server
 	if err := router.Run(":" + cfg.Port); err != nil {
