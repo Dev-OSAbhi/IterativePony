@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backup-job-monitor:
+    build: .
+    ports:
+      - "8081:8081"
+    environment:
+      - PORT=8081
+      - SQLITE_DB_PATH=/app/data/metrics.db
+      - MONGODB_URI=mongodb://mongo:27017
+      - MONGODB_DATABASE=backup_job_db
+      - ENVIRONMENT=development
+    volumes:
+      - ./data:/app/data
+      - ./.env:/app/.env
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=backup_job_db
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
