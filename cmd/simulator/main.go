@@ -61,7 +61,7 @@ func main() {
 	})
 
 	// Create API handler
-	handler := api.NewHandler(simulator)
+	handler := api.NewHandler(simulator, sqliteStore, mongoStore)
 
 	// Simulation endpoints
 	simGroup := router.Group("/simulate")
@@ -69,6 +69,18 @@ func main() {
 		simGroup.POST("/start", handler.StartSimulation)
 		simGroup.POST("/stop", handler.StopSimulation)
 		simGroup.GET("/status", handler.SimulationStatus)
+	}
+
+	// Metrics endpoints
+	metricsGroup := router.Group("/metrics")
+	{
+		metricsGroup.GET("", handler.GetMetrics)
+	}
+
+	// Agents endpoints
+	agentsGroup := router.Group("/agents")
+	{
+		agentsGroup.GET("/:agentID", handler.GetAgentMetadata)
 	}
 
 	// Run server
