@@ -6,6 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"iterative-pony/config"
+	"iterative-pony/internal/analysis"
+	"iterative-pony/internal/optimizer"
 	"iterative-pony/internal/api"
 	"iterative-pony/internal/simulation"
 	"iterative-pony/internal/storage"
@@ -45,6 +47,10 @@ func main() {
 	// Create backup job simulator
 	simulator := simulation.NewBackupJobSimulator(sqliteStore, "backup-job-001")
 
+	// Create analysis and optimizer instances
+	analyser := analysis.NewBottleneckDetector()
+	optimizer := optimizer.NewRecommendations()
+
 	// Set up Gin router
 	router := gin.New()
 	router.Use(gin.Logger())
@@ -61,7 +67,7 @@ func main() {
 	})
 
 	// Create API handler
-	handler := api.NewHandler(simulator, sqliteStore, mongoStore)
+	handler := api.NewHandler(simulator, sqliteStore, mongoStore, analyser, optimizer)
 
 	// Simulation endpoints
 	simGroup := router.Group("/simulate")
@@ -81,6 +87,18 @@ func main() {
 	agentsGroup := router.Group("/agents")
 	{
 		agentsGroup.GET("/:agentID", handler.GetAgentMetadata)
+	}
+
+	// Analysis endpoints
+	analysisGroup := router.Group("/analysis")
+	{
+		analysisGroup.GET("/bottlenecks", handler.GetBottlenecks)
+	}
+
+	// Optimization endpoints
+	optimizationGroup := router.Group("/optimization")
+	{
+		optimizationGroup.GET("/recommendations", handler.GetRecommendations)
 	}
 
 	// Run server

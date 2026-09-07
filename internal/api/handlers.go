@@ -7,6 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"iterative-pony/internal/analysis"
+	"iterative-pony/internal/optimizer"
 	"iterative-pony/internal/simulation"
 	"iterative-pony/internal/storage"
 )
@@ -16,14 +18,18 @@ type Handler struct {
 	simulator    *simulation.BackupJobSimulator
 	metricsStore *storage.MetricsStore
 	metaStore    *storage.MetadataStore
+	analyser     *analysis.BottleneckDetector
+	optimizer    *optimizer.Recommendations
 }
 
 // NewHandler creates a new Handler with the given dependencies.
-func NewHandler(sim *simulation.BackupJobSimulator, ms *storage.MetricsStore, mds *storage.MetadataStore) *Handler {
+func NewHandler(sim *simulation.BackupJobSimulator, ms *storage.MetricsStore, mds *storage.MetadataStore, a *analysis.BottleneckDetector, o *optimizer.Recommendations) *Handler {
 	return &Handler{
 		simulator:    sim,
 		metricsStore: ms,
 		metaStore:    mds,
+		analyser:     a,
+		optimizer:    o,
 	}
 }
 
@@ -86,4 +92,47 @@ func (h *Handler) GetAgentMetadata(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"agent": metadata})
+}
+
+// GetBottlenecks handles GET /analysis/bottlenecks to get detected bottlenecks for a job.
+func (h *Handler) GetBottlenecks(c *gin.Context) {
+	jobID := c.Query("jobID")
+	if jobID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "jobID is required"})
+		return
+	}
+	limitStr := c.DefaultQuery("limit", "1000")
+	limit := 1000
+	if _, err := fmt.Sscan(limitStr, &limit); err != nil || limit <= 0 {
+		limit = 1000
+	}
+	metrics, err := h.metricsStore.GetMetrics(jobID, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	bottlenecks := h.analyser.DetectBottlenecks(metrics)
+	c.JSON(http.StatusOK, gin.H{"bottlenecks": bottlenecks})
+}
+
+// GetRecommendations handles GET /optimization/recommendations to get optimization recommendations for a job.
+func (h *Handler) GetRecommendations(c *gin.Context) {
+	jobID := c.Query("jobID")
+	if jobID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "jobID is required"})
+		return
+	}
+	limitStr := c.DefaultQuery("limit", "1000")
+	limit := 1000
+	if _, err := fmt.Sscan(limitStr, &limit); err != nil || limit <= 0 {
+		limit = 1000
+	}
+	metrics, err := h.metricsStore.GetMetrics(jobID, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	bottlenecks := h.analyser.DetectBottlenecks(metrics)
+	recommendations := h.optimizer.Generate(bottlenecks)
+	c.JSON(http.StatusOK, gin.H{"recommendations": recommendations})
 }

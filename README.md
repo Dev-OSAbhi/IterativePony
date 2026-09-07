@@ -26,14 +26,16 @@ This project aligns with the Rubrik Software Engineer - Intern role, focusing on
 - `internal/network/` - Path optimization algorithms
 - `internal/optimizer/` - Recommendation generation
 - `config/` - Configuration loading
+- `Dockerfile` - Docker image build instructions
+- `docker-compose.yml` - Docker Compose file for easy setup of the application and its dependencies (MongoDB)
 
 ## Getting Started
 
 ### Prerequisites
 
-- Go 1.22+
-- SQLite
-- MongoDB
+- Go 1.22+ (for local development)
+- Docker and Docker Compose (for containerized deployment)
+- OR SQLite and MongoDB (for local development without Docker)
 
 ### Installation
 
@@ -43,8 +45,26 @@ go mod download
 
 ### Running
 
+#### Local Development (without Docker)
+
 ```bash
 go run ./cmd/simulator
+```
+
+#### Containerized Deployment (with Docker)
+
+```bash
+# Build and start all services
+docker-compose up --build
+
+# To run in detached mode
+docker-compose up -d --build
+
+# To stop and remove containers
+docker-compose down
+
+# To stop containers but keep volumes
+docker-compose stop
 ```
 
 ## Implementation Plan
@@ -69,9 +89,9 @@ The implementation will be broken down into small, incremental steps:
 3. ✅ Create API endpoints to retrieve metrics and agent information
 
 ### Phase 4: Initial Analysis and Optimization
-1. Implement basic bottleneck detection (simple threshold-based)
-2. Generate simple optimization recommendations
-3. Create API endpoints for analysis results and recommendations
+1. ✅ Implement basic bottleneck detection (simple threshold-based)
+2. ✅ Generate simple optimization recommendations
+3. ✅ Create API endpoints for analysis results and recommendations
 
 ## Verification Steps
 
@@ -81,7 +101,7 @@ The implementation will be broken down into small, incremental steps:
 4. ✅ Verify MongoDB connection works (health endpoint shows mongo: connected)
 5. ✅ Trigger simulation via API and verify metrics are stored
 6. ✅ Retrieve metrics via API and verify correct data returned
-7. Check that basic bottleneck detection and recommendations work
+7. ✅ Check that basic bottleneck detection and recommendations work
 
 ## Testing
 
