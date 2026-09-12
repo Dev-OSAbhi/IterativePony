@@ -49,7 +49,7 @@ func main() {
 
 	// Create analysis and optimizer instances
 	analyser := analysis.NewBottleneckDetector()
-	optimizer := optimizer.NewRecommendations()
+	optimizer := optimizer.NewAdvancedRecommendations(mongoStore)
 
 	// Set up Gin router
 	router := gin.New()

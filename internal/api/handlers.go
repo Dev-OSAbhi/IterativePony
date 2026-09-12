@@ -19,11 +19,11 @@ type Handler struct {
 	metricsStore *storage.MetricsStore
 	metaStore    *storage.MetadataStore
 	analyser     *analysis.BottleneckDetector
-	optimizer    *optimizer.Recommendations
+	optimizer    *optimizer.AdvancedRecommendations
 }
 
 // NewHandler creates a new Handler with the given dependencies.
-func NewHandler(sim *simulation.BackupJobSimulator, ms *storage.MetricsStore, mds *storage.MetadataStore, a *analysis.BottleneckDetector, o *optimizer.Recommendations) *Handler {
+func NewHandler(sim *simulation.BackupJobSimulator, ms *storage.MetricsStore, mds *storage.MetadataStore, a *analysis.BottleneckDetector, o *optimizer.AdvancedRecommendations) *Handler {
 	return &Handler{
 		simulator:    sim,
 		metricsStore: ms,
