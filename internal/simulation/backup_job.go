@@ -41,12 +41,9 @@ func (s *BackupJobSimulator) Start() {
 // Stop signals the simulation to stop and waits for the goroutine to finish.
 func (s *BackupJobSimulator) Stop() {
 	if !s.running {
-		// fmt.Printf("Stop: returning early because running is false\n")
 		return
 	}
-	// fmt.Printf("Stop: about to close stopCh, running=%v\n", s.running)
 	close(s.stopCh)
-	// fmt.Printf("Stop: closed stopCh\n")
 	s.running = false
 }
 
@@ -71,7 +68,6 @@ func (s *BackupJobSimulator) run() {
 
 // generateAndStoreMetrics creates a dummy metric and stores it in the MetricsStore.
 func (s *BackupJobSimulator) generateAndStoreMetrics() {
-	// Generate dummy values
 	latency := s.r.Float64() * 100         // 0-100 ms
 	throughput := s.r.Float64()*1000 + 100 // 100-1100 Mbps
 	errorRate := s.r.Float64() * 0.1       // 0-10% error

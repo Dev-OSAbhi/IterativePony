@@ -132,4 +132,4 @@ func TestMetricsStore_GetMetrics_UnknownJob(t *testing.T) {
 	if len(metrics) != 0 {
 		t.Errorf("GetMetrics for unknown job returned %v metrics; want 0", len(metrics))
 	}
-}
+}	
