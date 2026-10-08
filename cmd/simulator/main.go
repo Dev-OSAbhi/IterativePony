@@ -7,8 +7,8 @@ import (
 
 	"iterative-pony/config"
 	"iterative-pony/internal/analysis"
-	"iterative-pony/internal/optimizer"
 	"iterative-pony/internal/api"
+	"iterative-pony/internal/optimizer"
 	"iterative-pony/internal/simulation"
 	"iterative-pony/internal/storage"
 )
@@ -59,10 +59,10 @@ func main() {
 	// Health check endpoint
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"status":  "ok",
+			"status":      "ok",
 			"environment": cfg.Environment,
-			"sqlite":  "connected",
-			"mongo":   "connected",
+			"sqlite":      "connected",
+			"mongo":       "connected",
 		})
 	})
 

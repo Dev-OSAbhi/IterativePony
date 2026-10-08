@@ -34,3 +34,5 @@ vendor/
 
 # MongoDB data
 data/
+
+explain.md

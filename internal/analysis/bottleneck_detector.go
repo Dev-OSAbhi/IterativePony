@@ -35,7 +35,6 @@ func (d *BottleneckDetector) DetectBottlenecks(metrics []storage.Metric) []Bottl
 	var bottlenecks []Bottleneck
 
 	for _, m := range metrics {
-		// Check latency
 		if m.LatencyMS > 100.0 {
 			bottlenecks = append(bottlenecks, Bottleneck{
 				Timestamp: m.Timestamp,
@@ -46,7 +45,6 @@ func (d *BottleneckDetector) DetectBottlenecks(metrics []storage.Metric) []Bottl
 			})
 		}
 
-		// Check throughput
 		if m.ThroughputMbps < 50.0 {
 			bottlenecks = append(bottlenecks, Bottleneck{
 				Timestamp: m.Timestamp,
@@ -57,7 +55,6 @@ func (d *BottleneckDetector) DetectBottlenecks(metrics []storage.Metric) []Bottl
 			})
 		}
 
-		// Check error rate
 		if m.ErrorRate > 0.05 {
 			bottlenecks = append(bottlenecks, Bottleneck{
 				Timestamp: m.Timestamp,
